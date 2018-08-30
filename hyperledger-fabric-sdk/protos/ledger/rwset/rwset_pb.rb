@@ -14,6 +14,24 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
   add_message "rwset.NsReadWriteSet" do
     optional :namespace, :string, 1
     optional :rwset, :bytes, 2
+    repeated :collection_hashed_rwset, :message, 3, "rwset.CollectionHashedReadWriteSet"
+  end
+  add_message "rwset.CollectionHashedReadWriteSet" do
+    optional :collection_name, :string, 1
+    optional :hashed_rwset, :bytes, 2
+    optional :pvt_rwset_hash, :bytes, 3
+  end
+  add_message "rwset.TxPvtReadWriteSet" do
+    optional :data_model, :enum, 1, "rwset.TxReadWriteSet.DataModel"
+    repeated :ns_pvt_rwset, :message, 2, "rwset.NsPvtReadWriteSet"
+  end
+  add_message "rwset.NsPvtReadWriteSet" do
+    optional :namespace, :string, 1
+    repeated :collection_pvt_rwset, :message, 2, "rwset.CollectionPvtReadWriteSet"
+  end
+  add_message "rwset.CollectionPvtReadWriteSet" do
+    optional :collection_name, :string, 1
+    optional :rwset, :bytes, 2
   end
 end
 
@@ -21,4 +39,8 @@ module Rwset
   TxReadWriteSet = Google::Protobuf::DescriptorPool.generated_pool.lookup("rwset.TxReadWriteSet").msgclass
   TxReadWriteSet::DataModel = Google::Protobuf::DescriptorPool.generated_pool.lookup("rwset.TxReadWriteSet.DataModel").enummodule
   NsReadWriteSet = Google::Protobuf::DescriptorPool.generated_pool.lookup("rwset.NsReadWriteSet").msgclass
+  CollectionHashedReadWriteSet = Google::Protobuf::DescriptorPool.generated_pool.lookup("rwset.CollectionHashedReadWriteSet").msgclass
+  TxPvtReadWriteSet = Google::Protobuf::DescriptorPool.generated_pool.lookup("rwset.TxPvtReadWriteSet").msgclass
+  NsPvtReadWriteSet = Google::Protobuf::DescriptorPool.generated_pool.lookup("rwset.NsPvtReadWriteSet").msgclass
+  CollectionPvtReadWriteSet = Google::Protobuf::DescriptorPool.generated_pool.lookup("rwset.CollectionPvtReadWriteSet").msgclass
 end

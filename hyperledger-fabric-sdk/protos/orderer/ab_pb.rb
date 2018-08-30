@@ -7,6 +7,7 @@ require 'common/common_pb'
 Google::Protobuf::DescriptorPool.generated_pool.build do
   add_message "orderer.BroadcastResponse" do
     optional :status, :enum, 1, "common.Status"
+    optional :info, :string, 2
   end
   add_message "orderer.SeekNewest" do
   end

@@ -12,6 +12,8 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     value :ROLE, 0
     value :ORGANIZATION_UNIT, 1
     value :IDENTITY, 2
+    value :ANONYMITY, 3
+    value :COMBINED, 4
   end
   add_message "common.OrganizationUnit" do
     optional :msp_identifier, :string, 1
@@ -25,6 +27,18 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
   add_enum "common.MSPRole.MSPRoleType" do
     value :MEMBER, 0
     value :ADMIN, 1
+    value :CLIENT, 2
+    value :PEER, 3
+  end
+  add_message "common.MSPIdentityAnonymity" do
+    optional :anonymity_type, :enum, 1, "common.MSPIdentityAnonymity.MSPIdentityAnonymityType"
+  end
+  add_enum "common.MSPIdentityAnonymity.MSPIdentityAnonymityType" do
+    value :NOMINAL, 0
+    value :ANONYMOUS, 1
+  end
+  add_message "common.CombinedPrincipal" do
+    repeated :principals, :message, 1, "common.MSPPrincipal"
   end
 end
 
@@ -34,4 +48,7 @@ module Common
   OrganizationUnit = Google::Protobuf::DescriptorPool.generated_pool.lookup("common.OrganizationUnit").msgclass
   MSPRole = Google::Protobuf::DescriptorPool.generated_pool.lookup("common.MSPRole").msgclass
   MSPRole::MSPRoleType = Google::Protobuf::DescriptorPool.generated_pool.lookup("common.MSPRole.MSPRoleType").enummodule
+  MSPIdentityAnonymity = Google::Protobuf::DescriptorPool.generated_pool.lookup("common.MSPIdentityAnonymity").msgclass
+  MSPIdentityAnonymity::MSPIdentityAnonymityType = Google::Protobuf::DescriptorPool.generated_pool.lookup("common.MSPIdentityAnonymity.MSPIdentityAnonymityType").enummodule
+  CombinedPrincipal = Google::Protobuf::DescriptorPool.generated_pool.lookup("common.CombinedPrincipal").msgclass
 end

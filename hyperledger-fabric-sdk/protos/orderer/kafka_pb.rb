@@ -13,6 +13,14 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
   end
   add_message "orderer.KafkaMessageRegular" do
     optional :payload, :bytes, 1
+    optional :config_seq, :uint64, 2
+    optional :class, :enum, 3, "orderer.KafkaMessageRegular.Class"
+    optional :original_offset, :int64, 4
+  end
+  add_enum "orderer.KafkaMessageRegular.Class" do
+    value :UNKNOWN, 0
+    value :NORMAL, 1
+    value :CONFIG, 2
   end
   add_message "orderer.KafkaMessageTimeToCut" do
     optional :block_number, :uint64, 1
@@ -22,12 +30,15 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
   end
   add_message "orderer.KafkaMetadata" do
     optional :last_offset_persisted, :int64, 1
+    optional :last_original_offset_processed, :int64, 2
+    optional :last_resubmitted_config_offset, :int64, 3
   end
 end
 
 module Orderer
   KafkaMessage = Google::Protobuf::DescriptorPool.generated_pool.lookup("orderer.KafkaMessage").msgclass
   KafkaMessageRegular = Google::Protobuf::DescriptorPool.generated_pool.lookup("orderer.KafkaMessageRegular").msgclass
+  KafkaMessageRegular::Class = Google::Protobuf::DescriptorPool.generated_pool.lookup("orderer.KafkaMessageRegular.Class").enummodule
   KafkaMessageTimeToCut = Google::Protobuf::DescriptorPool.generated_pool.lookup("orderer.KafkaMessageTimeToCut").msgclass
   KafkaMessageConnect = Google::Protobuf::DescriptorPool.generated_pool.lookup("orderer.KafkaMessageConnect").msgclass
   KafkaMetadata = Google::Protobuf::DescriptorPool.generated_pool.lookup("orderer.KafkaMetadata").msgclass

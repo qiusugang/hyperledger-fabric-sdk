@@ -8,6 +8,12 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     repeated :reads, :message, 1, "kvrwset.KVRead"
     repeated :range_queries_info, :message, 2, "kvrwset.RangeQueryInfo"
     repeated :writes, :message, 3, "kvrwset.KVWrite"
+    repeated :metadata_writes, :message, 4, "kvrwset.KVMetadataWrite"
+  end
+  add_message "kvrwset.HashedRWSet" do
+    repeated :hashed_reads, :message, 1, "kvrwset.KVReadHash"
+    repeated :hashed_writes, :message, 2, "kvrwset.KVWriteHash"
+    repeated :metadata_writes, :message, 3, "kvrwset.KVMetadataWriteHash"
   end
   add_message "kvrwset.KVRead" do
     optional :key, :string, 1
@@ -17,6 +23,27 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     optional :key, :string, 1
     optional :is_delete, :bool, 2
     optional :value, :bytes, 3
+  end
+  add_message "kvrwset.KVMetadataWrite" do
+    optional :key, :string, 1
+    repeated :entries, :message, 2, "kvrwset.KVMetadataEntry"
+  end
+  add_message "kvrwset.KVReadHash" do
+    optional :key_hash, :bytes, 1
+    optional :version, :message, 2, "kvrwset.Version"
+  end
+  add_message "kvrwset.KVWriteHash" do
+    optional :key_hash, :bytes, 1
+    optional :is_delete, :bool, 2
+    optional :value_hash, :bytes, 3
+  end
+  add_message "kvrwset.KVMetadataWriteHash" do
+    optional :key_hash, :bytes, 1
+    repeated :entries, :message, 2, "kvrwset.KVMetadataEntry"
+  end
+  add_message "kvrwset.KVMetadataEntry" do
+    optional :name, :string, 1
+    optional :value, :bytes, 2
   end
   add_message "kvrwset.Version" do
     optional :block_num, :uint64, 1
@@ -43,8 +70,14 @@ end
 
 module Kvrwset
   KVRWSet = Google::Protobuf::DescriptorPool.generated_pool.lookup("kvrwset.KVRWSet").msgclass
+  HashedRWSet = Google::Protobuf::DescriptorPool.generated_pool.lookup("kvrwset.HashedRWSet").msgclass
   KVRead = Google::Protobuf::DescriptorPool.generated_pool.lookup("kvrwset.KVRead").msgclass
   KVWrite = Google::Protobuf::DescriptorPool.generated_pool.lookup("kvrwset.KVWrite").msgclass
+  KVMetadataWrite = Google::Protobuf::DescriptorPool.generated_pool.lookup("kvrwset.KVMetadataWrite").msgclass
+  KVReadHash = Google::Protobuf::DescriptorPool.generated_pool.lookup("kvrwset.KVReadHash").msgclass
+  KVWriteHash = Google::Protobuf::DescriptorPool.generated_pool.lookup("kvrwset.KVWriteHash").msgclass
+  KVMetadataWriteHash = Google::Protobuf::DescriptorPool.generated_pool.lookup("kvrwset.KVMetadataWriteHash").msgclass
+  KVMetadataEntry = Google::Protobuf::DescriptorPool.generated_pool.lookup("kvrwset.KVMetadataEntry").msgclass
   Version = Google::Protobuf::DescriptorPool.generated_pool.lookup("kvrwset.Version").msgclass
   RangeQueryInfo = Google::Protobuf::DescriptorPool.generated_pool.lookup("kvrwset.RangeQueryInfo").msgclass
   QueryReads = Google::Protobuf::DescriptorPool.generated_pool.lookup("kvrwset.QueryReads").msgclass

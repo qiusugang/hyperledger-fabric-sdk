@@ -31,6 +31,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     optional :channel_id, :string, 1
     optional :read_set, :message, 2, "common.ConfigGroup"
     optional :write_set, :message, 3, "common.ConfigGroup"
+    map :isolated_data, :string, :bytes, 5
   end
   add_message "common.ConfigGroup" do
     optional :version, :uint64, 1

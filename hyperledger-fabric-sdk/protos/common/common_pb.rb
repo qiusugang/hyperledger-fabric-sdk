@@ -28,6 +28,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     optional :tx_id, :string, 5
     optional :epoch, :uint64, 6
     optional :extension, :bytes, 7
+    optional :tls_cert_hash, :bytes, 8
   end
   add_message "common.SignatureHeader" do
     optional :creator, :bytes, 1
@@ -65,6 +66,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     value :NOT_FOUND, 404
     value :REQUEST_ENTITY_TOO_LARGE, 413
     value :INTERNAL_SERVER_ERROR, 500
+    value :NOT_IMPLEMENTED, 501
     value :SERVICE_UNAVAILABLE, 503
   end
   add_enum "common.HeaderType" do
@@ -75,6 +77,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     value :ORDERER_TRANSACTION, 4
     value :DELIVER_SEEK_INFO, 5
     value :CHAINCODE_PACKAGE, 6
+    value :PEER_ADMIN_OPERATION, 8
   end
   add_enum "common.BlockMetadataIndex" do
     value :SIGNATURES, 0

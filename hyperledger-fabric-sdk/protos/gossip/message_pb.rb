@@ -3,6 +3,7 @@
 
 require 'google/protobuf'
 
+require 'common/collection_pb'
 Google::Protobuf::DescriptorPool.generated_pool.build do
   add_message "gossip.Envelope" do
     optional :payload, :bytes, 1
@@ -20,7 +21,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
   end
   add_message "gossip.GossipMessage" do
     optional :nonce, :uint64, 1
-    optional :new_channel, :bytes, 2
+    optional :channel, :bytes, 2
     optional :tag, :enum, 3, "gossip.GossipMessage.Tag"
     oneof :content do
       optional :alive_msg, :message, 5, "gossip.AliveMessage"
@@ -40,6 +41,10 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :state_response, :message, 19, "gossip.RemoteStateResponse"
       optional :leadership_msg, :message, 20, "gossip.LeadershipMessage"
       optional :peer_identity, :message, 21, "gossip.PeerIdentity"
+      optional :ack, :message, 22, "gossip.Acknowledgement"
+      optional :privateReq, :message, 23, "gossip.RemotePvtDataRequest"
+      optional :privateRes, :message, 24, "gossip.RemotePvtDataResponse"
+      optional :private_data, :message, 25, "gossip.PrivateDataMessage"
     end
   end
   add_enum "gossip.GossipMessage.Tag" do
@@ -51,10 +56,15 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     value :CHAN_OR_ORG, 5
   end
   add_message "gossip.StateInfo" do
-    optional :metadata, :bytes, 1
     optional :timestamp, :message, 2, "gossip.PeerTime"
     optional :pki_id, :bytes, 3
     optional :channel_MAC, :bytes, 4
+    optional :properties, :message, 5, "gossip.Properties"
+  end
+  add_message "gossip.Properties" do
+    optional :ledger_height, :uint64, 1
+    optional :left_channel, :bool, 2
+    repeated :chaincodes, :message, 3, "gossip.Chaincode"
   end
   add_message "gossip.StateInfoSnapshot" do
     repeated :elements, :message, 1, "gossip.Envelope"
@@ -95,9 +105,21 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
   add_message "gossip.DataMessage" do
     optional :payload, :message, 1, "gossip.Payload"
   end
+  add_message "gossip.PrivateDataMessage" do
+    optional :payload, :message, 1, "gossip.PrivatePayload"
+  end
   add_message "gossip.Payload" do
     optional :seq_num, :uint64, 1
     optional :data, :bytes, 2
+    repeated :private_data, :bytes, 3
+  end
+  add_message "gossip.PrivatePayload" do
+    optional :collection_name, :string, 1
+    optional :namespace, :string, 2
+    optional :tx_id, :string, 3
+    optional :private_rwset, :bytes, 4
+    optional :private_sim_height, :uint64, 5
+    optional :collection_configs, :message, 6, "common.CollectionConfigPackage"
   end
   add_message "gossip.AliveMessage" do
     optional :membership, :message, 1, "gossip.Member"
@@ -135,6 +157,35 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
   add_message "gossip.RemoteStateResponse" do
     repeated :payloads, :message, 1, "gossip.Payload"
   end
+  add_message "gossip.RemotePvtDataRequest" do
+    repeated :digests, :message, 1, "gossip.PvtDataDigest"
+  end
+  add_message "gossip.PvtDataDigest" do
+    optional :tx_id, :string, 1
+    optional :namespace, :string, 2
+    optional :collection, :string, 3
+    optional :block_seq, :uint64, 4
+    optional :seq_in_block, :uint64, 5
+  end
+  add_message "gossip.RemotePvtDataResponse" do
+    repeated :elements, :message, 1, "gossip.PvtDataElement"
+  end
+  add_message "gossip.PvtDataElement" do
+    optional :digest, :message, 1, "gossip.PvtDataDigest"
+    repeated :payload, :bytes, 2
+  end
+  add_message "gossip.PvtDataPayload" do
+    optional :tx_seq_in_block, :uint64, 1
+    optional :payload, :bytes, 2
+  end
+  add_message "gossip.Acknowledgement" do
+    optional :error, :string, 1
+  end
+  add_message "gossip.Chaincode" do
+    optional :name, :string, 1
+    optional :version, :string, 2
+    optional :metadata, :bytes, 3
+  end
   add_enum "gossip.PullMsgType" do
     value :UNDEFINED, 0
     value :BLOCK_MSG, 1
@@ -149,6 +200,7 @@ module Gossip
   GossipMessage = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.GossipMessage").msgclass
   GossipMessage::Tag = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.GossipMessage.Tag").enummodule
   StateInfo = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.StateInfo").msgclass
+  Properties = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.Properties").msgclass
   StateInfoSnapshot = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.StateInfoSnapshot").msgclass
   StateInfoPullRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.StateInfoPullRequest").msgclass
   ConnEstablish = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.ConnEstablish").msgclass
@@ -158,7 +210,9 @@ module Gossip
   DataUpdate = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.DataUpdate").msgclass
   DataDigest = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.DataDigest").msgclass
   DataMessage = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.DataMessage").msgclass
+  PrivateDataMessage = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.PrivateDataMessage").msgclass
   Payload = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.Payload").msgclass
+  PrivatePayload = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.PrivatePayload").msgclass
   AliveMessage = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.AliveMessage").msgclass
   LeadershipMessage = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.LeadershipMessage").msgclass
   PeerTime = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.PeerTime").msgclass
@@ -168,5 +222,12 @@ module Gossip
   Empty = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.Empty").msgclass
   RemoteStateRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.RemoteStateRequest").msgclass
   RemoteStateResponse = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.RemoteStateResponse").msgclass
+  RemotePvtDataRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.RemotePvtDataRequest").msgclass
+  PvtDataDigest = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.PvtDataDigest").msgclass
+  RemotePvtDataResponse = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.RemotePvtDataResponse").msgclass
+  PvtDataElement = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.PvtDataElement").msgclass
+  PvtDataPayload = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.PvtDataPayload").msgclass
+  Acknowledgement = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.Acknowledgement").msgclass
+  Chaincode = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.Chaincode").msgclass
   PullMsgType = Google::Protobuf::DescriptorPool.generated_pool.lookup("gossip.PullMsgType").enummodule
 end

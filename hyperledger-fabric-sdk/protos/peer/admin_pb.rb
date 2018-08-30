@@ -4,6 +4,7 @@
 require 'google/protobuf'
 
 require 'google/protobuf/empty_pb'
+require 'common/common_pb'
 Google::Protobuf::DescriptorPool.generated_pool.build do
   add_message "protos.ServerStatus" do
     optional :status, :enum, 1, "protos.ServerStatus.StatusCode"
@@ -24,6 +25,11 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     optional :log_module, :string, 1
     optional :log_level, :string, 2
   end
+  add_message "protos.AdminOperation" do
+    oneof :content do
+      optional :logReq, :message, 1, "protos.LogLevelRequest"
+    end
+  end
 end
 
 module Protos
@@ -31,4 +37,5 @@ module Protos
   ServerStatus::StatusCode = Google::Protobuf::DescriptorPool.generated_pool.lookup("protos.ServerStatus.StatusCode").enummodule
   LogLevelRequest = Google::Protobuf::DescriptorPool.generated_pool.lookup("protos.LogLevelRequest").msgclass
   LogLevelResponse = Google::Protobuf::DescriptorPool.generated_pool.lookup("protos.LogLevelResponse").msgclass
+  AdminOperation = Google::Protobuf::DescriptorPool.generated_pool.lookup("protos.AdminOperation").msgclass
 end

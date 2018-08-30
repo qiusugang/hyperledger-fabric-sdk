@@ -19,10 +19,26 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     optional :crypto_config, :message, 8, "msp.FabricCryptoConfig"
     repeated :tls_root_certs, :bytes, 9
     repeated :tls_intermediate_certs, :bytes, 10
+    optional :fabric_node_ous, :message, 11, "msp.FabricNodeOUs"
   end
   add_message "msp.FabricCryptoConfig" do
     optional :signature_hash_family, :string, 1
     optional :identity_identifier_hash_function, :string, 2
+  end
+  add_message "msp.IdemixMSPConfig" do
+    optional :name, :string, 1
+    optional :ipk, :bytes, 2
+    optional :signer, :message, 3, "msp.IdemixMSPSignerConfig"
+    optional :revocation_pk, :bytes, 4
+    optional :epoch, :int64, 5
+  end
+  add_message "msp.IdemixMSPSignerConfig" do
+    optional :cred, :bytes, 1
+    optional :sk, :bytes, 2
+    optional :organizational_unit_identifier, :string, 3
+    optional :is_admin, :bool, 4
+    optional :enrollment_id, :string, 5
+    optional :credential_revocation_information, :bytes, 6
   end
   add_message "msp.SigningIdentityInfo" do
     optional :public_signer, :bytes, 1
@@ -36,13 +52,21 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     optional :certificate, :bytes, 1
     optional :organizational_unit_identifier, :string, 2
   end
+  add_message "msp.FabricNodeOUs" do
+    optional :enable, :bool, 1
+    optional :client_ou_identifier, :message, 2, "msp.FabricOUIdentifier"
+    optional :peer_ou_identifier, :message, 3, "msp.FabricOUIdentifier"
+  end
 end
 
 module Msp
   MSPConfig = Google::Protobuf::DescriptorPool.generated_pool.lookup("msp.MSPConfig").msgclass
   FabricMSPConfig = Google::Protobuf::DescriptorPool.generated_pool.lookup("msp.FabricMSPConfig").msgclass
   FabricCryptoConfig = Google::Protobuf::DescriptorPool.generated_pool.lookup("msp.FabricCryptoConfig").msgclass
+  IdemixMSPConfig = Google::Protobuf::DescriptorPool.generated_pool.lookup("msp.IdemixMSPConfig").msgclass
+  IdemixMSPSignerConfig = Google::Protobuf::DescriptorPool.generated_pool.lookup("msp.IdemixMSPSignerConfig").msgclass
   SigningIdentityInfo = Google::Protobuf::DescriptorPool.generated_pool.lookup("msp.SigningIdentityInfo").msgclass
   KeyInfo = Google::Protobuf::DescriptorPool.generated_pool.lookup("msp.KeyInfo").msgclass
   FabricOUIdentifier = Google::Protobuf::DescriptorPool.generated_pool.lookup("msp.FabricOUIdentifier").msgclass
+  FabricNodeOUs = Google::Protobuf::DescriptorPool.generated_pool.lookup("msp.FabricNodeOUs").msgclass
 end

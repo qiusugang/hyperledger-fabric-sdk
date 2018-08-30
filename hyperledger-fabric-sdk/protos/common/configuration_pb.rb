@@ -16,6 +16,11 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
   add_message "common.Consortium" do
     optional :name, :string, 1
   end
+  add_message "common.Capabilities" do
+    map :capabilities, :string, :message, 1, "common.Capability"
+  end
+  add_message "common.Capability" do
+  end
 end
 
 module Common
@@ -23,4 +28,6 @@ module Common
   BlockDataHashingStructure = Google::Protobuf::DescriptorPool.generated_pool.lookup("common.BlockDataHashingStructure").msgclass
   OrdererAddresses = Google::Protobuf::DescriptorPool.generated_pool.lookup("common.OrdererAddresses").msgclass
   Consortium = Google::Protobuf::DescriptorPool.generated_pool.lookup("common.Consortium").msgclass
+  Capabilities = Google::Protobuf::DescriptorPool.generated_pool.lookup("common.Capabilities").msgclass
+  Capability = Google::Protobuf::DescriptorPool.generated_pool.lookup("common.Capability").msgclass
 end

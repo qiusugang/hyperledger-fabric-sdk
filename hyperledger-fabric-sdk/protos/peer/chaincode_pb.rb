@@ -3,7 +3,6 @@
 
 require 'google/protobuf'
 
-require 'google/protobuf/timestamp_pb'
 Google::Protobuf::DescriptorPool.generated_pool.build do
   add_message "protos.ChaincodeID" do
     optional :path, :string, 1
@@ -12,6 +11,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
   end
   add_message "protos.ChaincodeInput" do
     repeated :args, :bytes, 1
+    map :decorations, :string, :bytes, 2
   end
   add_message "protos.ChaincodeSpec" do
     optional :type, :enum, 1, "protos.ChaincodeSpec.Type"
@@ -28,7 +28,6 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
   end
   add_message "protos.ChaincodeDeploymentSpec" do
     optional :chaincode_spec, :message, 1, "protos.ChaincodeSpec"
-    optional :effective_date, :message, 2, "google.protobuf.Timestamp"
     optional :code_package, :bytes, 3
     optional :exec_env, :enum, 4, "protos.ChaincodeDeploymentSpec.ExecutionEnvironment"
   end
@@ -38,7 +37,9 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
   end
   add_message "protos.ChaincodeInvocationSpec" do
     optional :chaincode_spec, :message, 1, "protos.ChaincodeSpec"
-    optional :id_generation_alg, :string, 2
+  end
+  add_message "protos.LifecycleEvent" do
+    optional :chaincode_name, :string, 1
   end
   add_enum "protos.ConfidentialityLevel" do
     value :PUBLIC, 0
@@ -54,5 +55,6 @@ module Protos
   ChaincodeDeploymentSpec = Google::Protobuf::DescriptorPool.generated_pool.lookup("protos.ChaincodeDeploymentSpec").msgclass
   ChaincodeDeploymentSpec::ExecutionEnvironment = Google::Protobuf::DescriptorPool.generated_pool.lookup("protos.ChaincodeDeploymentSpec.ExecutionEnvironment").enummodule
   ChaincodeInvocationSpec = Google::Protobuf::DescriptorPool.generated_pool.lookup("protos.ChaincodeInvocationSpec").msgclass
+  LifecycleEvent = Google::Protobuf::DescriptorPool.generated_pool.lookup("protos.LifecycleEvent").msgclass
   ConfidentialityLevel = Google::Protobuf::DescriptorPool.generated_pool.lookup("protos.ConfidentialityLevel").enummodule
 end

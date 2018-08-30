@@ -14,6 +14,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     optional :txid, :string, 4
     optional :proposal, :message, 5, "protos.SignedProposal"
     optional :chaincode_event, :message, 6, "protos.ChaincodeEvent"
+    optional :channel_id, :string, 7
   end
   add_enum "protos.ChaincodeMessage.Type" do
     value :UNDEFINED, 0
@@ -36,16 +37,27 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     value :KEEPALIVE, 18
     value :GET_HISTORY_FOR_KEY, 19
   end
-  add_message "protos.PutStateInfo" do
+  add_message "protos.GetState" do
+    optional :key, :string, 1
+    optional :collection, :string, 2
+  end
+  add_message "protos.PutState" do
     optional :key, :string, 1
     optional :value, :bytes, 2
+    optional :collection, :string, 3
+  end
+  add_message "protos.DelState" do
+    optional :key, :string, 1
+    optional :collection, :string, 2
   end
   add_message "protos.GetStateByRange" do
     optional :startKey, :string, 1
     optional :endKey, :string, 2
+    optional :collection, :string, 3
   end
   add_message "protos.GetQueryResult" do
-    optional :query_by_chaincode, :string, 1
+    optional :query, :string, 1
+    optional :collection, :string, 2
   end
   add_message "protos.GetHistoryForKey" do
     optional :key, :string, 1
@@ -69,7 +81,9 @@ end
 module Protos
   ChaincodeMessage = Google::Protobuf::DescriptorPool.generated_pool.lookup("protos.ChaincodeMessage").msgclass
   ChaincodeMessage::Type = Google::Protobuf::DescriptorPool.generated_pool.lookup("protos.ChaincodeMessage.Type").enummodule
-  PutStateInfo = Google::Protobuf::DescriptorPool.generated_pool.lookup("protos.PutStateInfo").msgclass
+  GetState = Google::Protobuf::DescriptorPool.generated_pool.lookup("protos.GetState").msgclass
+  PutState = Google::Protobuf::DescriptorPool.generated_pool.lookup("protos.PutState").msgclass
+  DelState = Google::Protobuf::DescriptorPool.generated_pool.lookup("protos.DelState").msgclass
   GetStateByRange = Google::Protobuf::DescriptorPool.generated_pool.lookup("protos.GetStateByRange").msgclass
   GetQueryResult = Google::Protobuf::DescriptorPool.generated_pool.lookup("protos.GetQueryResult").msgclass
   GetHistoryForKey = Google::Protobuf::DescriptorPool.generated_pool.lookup("protos.GetHistoryForKey").msgclass

@@ -37,4 +37,23 @@ module Protos
 
     Stub = Service.rpc_stub_class
   end
+  module Deliver
+    class Service
+
+      include GRPC::GenericService
+
+      self.marshal_class_method = :encode
+      self.unmarshal_class_method = :decode
+      self.service_name = 'protos.Deliver'
+
+      # deliver first requires an Envelope of type ab.DELIVER_SEEK_INFO with Payload data as a marshaled orderer.SeekInfo message,
+      # then a stream of block replies is received.
+      rpc :Deliver, stream(Common::Envelope), stream(DeliverResponse)
+      # deliver first requires an Envelope of type ab.DELIVER_SEEK_INFO with Payload data as a marshaled orderer.SeekInfo message,
+      # then a stream of **filtered** block replies is received.
+      rpc :DeliverFiltered, stream(Common::Envelope), stream(DeliverResponse)
+    end
+
+    Stub = Service.rpc_stub_class
+  end
 end

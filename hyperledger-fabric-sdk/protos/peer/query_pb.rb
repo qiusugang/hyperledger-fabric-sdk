@@ -14,6 +14,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     optional :input, :string, 4
     optional :escc, :string, 5
     optional :vscc, :string, 6
+    optional :id, :bytes, 7
   end
   add_message "protos.ChannelQueryResponse" do
     repeated :channels, :message, 1, "protos.ChannelInfo"

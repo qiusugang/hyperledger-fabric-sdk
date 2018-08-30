@@ -55,6 +55,8 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     value :BAD_RESPONSE_PAYLOAD, 21
     value :BAD_RWSET, 22
     value :ILLEGAL_WRITESET, 23
+    value :INVALID_WRITESET, 24
+    value :NOT_VALIDATED, 254
     value :INVALID_OTHER_REASON, 255
   end
 end
